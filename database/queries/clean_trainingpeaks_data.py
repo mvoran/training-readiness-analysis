@@ -10,7 +10,7 @@ df['Title'] = df['Title'].fillna('Workout')
 df['Rpe'] = df['Rpe'].fillna(5)
 
 # Apply RPE rules
-df['rpe'] = df.apply(lambda row: 
+df['Rpe'] = df.apply(lambda row: 
     8 if row['IF'] >= 0.85
     else 7 if row['IF'] >= 0.8
     else 6 if (row['WorkoutType'] == 'MTB' and row['IF'] < 0.8)
