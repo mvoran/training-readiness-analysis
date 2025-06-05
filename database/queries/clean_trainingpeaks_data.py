@@ -10,11 +10,18 @@ df['Title'] = df['Title'].fillna('Workout')
 df['Rpe'] = df['Rpe'].fillna(5)
 
 # Apply RPE rules
+bike_workouts = ['Bike', 'MTB']
 df['Rpe'] = df.apply(lambda row: 
-    8 if row['IF'] >= 0.85
-    else 7 if row['IF'] >= 0.8
-    else 6 if (row['WorkoutType'] == 'MTB' and row['IF'] < 0.8)
-    else 6 if row['WorkoutType'] == 'Strength' and row['Rpe'] < 6
+    8 if row['WorkoutType'] in bike_workouts and row['IF'] >= 0.85
+    else 7 if row['WorkoutType'] in bike_workouts and row['IF'] >= 0.8 
+    else 6 if row['WorkoutType'] in bike_workouts and row['IF'] >= 0.75
+    else 5 if row['WorkoutType'] in bike_workouts and row['IF'] >= 0.7   
+    else 4 if row['WorkoutType'] in bike_workouts and row['IF'] >= 0.65
+    else 3 if row['WorkoutType'] in bike_workouts and row['IF'] >= 0.6
+    else 2 if row['WorkoutType'] in bike_workouts and row['IF'] < 0.6
+    else 7 if row['WorkoutType'] == 'Strength' and row['HeartRateAverage'] >= 125
+    else 6 if row['WorkoutType'] == 'Strength' and row['HeartRateAverage'] >= 105
+    else 5 if row['WorkoutType'] == 'Strength'
     else row['Rpe'], axis=1)
 
 # Build timestamp for output file
