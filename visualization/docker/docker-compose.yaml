@@ -26,7 +26,7 @@ services:
       MB_DB_DBNAME: ${MB_DB_DBNAME}
       MB_DB_PORT: 5432
       MB_DB_USER: ${MB_DB_USER}
-      MB_DB_PASSWORD: ${MB_DB_PASSWORD}
+      MB_DB_PASS: ${MB_DB_PASS}
       MB_DB_HOST: postgres
     depends_on:
       postgres:
