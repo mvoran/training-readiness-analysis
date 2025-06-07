@@ -1,4 +1,6 @@
 services:
+  # ─────────────────────────────────────────────────────────
+  # 1) Postgres (holds both Metabase’s app DB and your “training_readiness” data)
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -6,31 +8,92 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./init-training.sql:/docker-entrypoint-initdb.d/init-training.sql
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "metabase"]
-      interval: 5s
+      # Wait until Postgres is up and ready
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+      interval: 20s
       timeout: 5s
-      retries: 5
+      retries: 10
 
+  # ─────────────────────────────────────────────────────────
+  # 2) Metabase (no manual setup; we’ll call /api/setup to create admin + add the external DB)
   metabase:
     image: metabase/metabase:v0.55.1
     container_name: metabase
     ports:
       - "3000:3000"
     environment:
+      # Tell Metabase to use Postgres for its *internal* app DB
       MB_DB_TYPE: postgres
       MB_DB_DBNAME: ${MB_DB_DBNAME}
-      MB_DB_PORT: 5432
+      MB_DB_PORT: ${MB_DB_PORT}
       MB_DB_USER: ${MB_DB_USER}
       MB_DB_PASS: ${MB_DB_PASS}
       MB_DB_HOST: postgres
+      # Add initialization settings
+      MB_DB_CONNECTION_URI: "postgres://${MB_DB_USER}:${MB_DB_PASS}@postgres:5432/${MB_DB_DBNAME}?sslmode=disable"
+      MB_EMAIL_SMTP_HOST: ""
+      MB_EMAIL_SMTP_PORT: ""
+      MB_EMAIL_SMTP_USERNAME: ""
+      MB_EMAIL_SMTP_PASSWORD: ""
+      MB_EMAIL_SMTP_SECURITY: "none"
+      MB_EMAIL_SMTP_FROM: ""
+      # Disable analytics and tracking
+      MB_ENABLE_ANALYTICS: "false"
+      MB_ENABLE_TRACKING: "false"
+      # Increase timeouts
+      MB_DB_CONNECTION_TIMEOUT: "10000"
+      MB_DB_CONNECTION_URI_TIMEOUT: "10000"
+      # Add startup settings
+      MB_STARTUP_TIMEOUT: "120000"
+      MB_DB_CONNECTION_POOL_TIMEOUT: "30000"
+      MB_DB_CONNECTION_POOL_SIZE: "10"
     depends_on:
       postgres:
-        condition: service_healthy  # Wait for Postgres healthcheck
+        condition: service_healthy
+    healthcheck:
+      # Wait until Metabase’s own HTTP API is responding
+      test: ["CMD", "wget", "-qO-", "--retry-connrefused", "--timeout=2", "${MB_SITE_URL}/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 40s
+
+  # ─────────────────────────────────────────────────────────
+  # 3) metabase-setup: calls /api/setup to create admin + register "training_readiness"
+  metabase_setup:
+    image: byrnedo/alpine-curl
+    container_name: metabase_setup
+    depends_on:
+      metabase:
+        condition: service_started
+    environment:
+      # (A) Admin user to create
+      MB_SETUP_EMAIL:       ${MB_SETUP_EMAIL}
+      MB_SETUP_PASSWORD:    ${MB_SETUP_PASSWORD}
+      MB_SETUP_FIRST_NAME:  ${MB_SETUP_FIRST_NAME}   # e.g. “Admin”
+      MB_SETUP_LAST_NAME:   ${MB_SETUP_LAST_NAME}    # e.g. “User”
+
+      # (B) Application‐wide preferences
+      MB_SITE_NAME:         ${MB_SITE_NAME}          # e.g. “My Metabase”
+      MB_SITE_LOCALE:       ${MB_SITE_LOCALE}        # e.g. “en_US”
+      MB_SITE_URL:          ${MB_SITE_URL}           # e.g. “http://localhost:3000” (default is "http://metabase:3000")
+
+      # (C) External data source details
+      EXT_DB_NAME:          ${EXT_DB_NAME}           # “training_readiness”
+      EXT_DB_HOST:          ${EXT_DB_HOST}           # “postgres”
+      EXT_DB_PORT:          ${EXT_DB_PORT}           # 5432
+      EXT_DB_USER:          ${EXT_DB_USER}           # “metabase”
+      EXT_DB_PASS:          ${EXT_DB_PASS}           # “metabase”
+
+    entrypoint: ["/metabase-setup.sh"]
+    volumes:
+      - ./metabase-setup.sh:/metabase-setup.sh
 
 volumes:
   postgres_data:
