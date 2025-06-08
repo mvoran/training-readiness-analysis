@@ -6,13 +6,21 @@ DROP TABLE IF EXISTS trainingpeaks_data;
 -- Create table if it doesn't exist, or append to it if it does
 CREATE TABLE IF NOT EXISTS trainingpeaks_data AS
   SELECT *
-    FROM read_xlsx('{{EXCEL_PATH}}', empty_as_varchar = true);
+    FROM {% if FILE_TYPE == 'csv' %}
+         read_csv_auto('{{FILE_PATH}}', header=true, nullstr='', sample_size=1000)
+         {% else %}
+         read_xlsx('{{FILE_PATH}}', empty_as_varchar = true)
+         {% endif %};
 
 -- If table already existed, append the new data
 {% if not REPLACE_MODE %}
 INSERT INTO trainingpeaks_data
   SELECT *
-    FROM read_xlsx('{{EXCEL_PATH}}', empty_as_varchar = true);
+    FROM {% if FILE_TYPE == 'csv' %}
+         read_csv_auto('{{FILE_PATH}}', header=true, nullstr='', sample_size=1000)
+         {% else %}
+         read_xlsx('{{FILE_PATH}}', empty_as_varchar = true)
+         {% endif %};
 {% endif %}
 
 -- Only handle primary key in replace mode
