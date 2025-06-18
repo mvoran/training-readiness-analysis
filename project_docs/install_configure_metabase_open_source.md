@@ -20,16 +20,16 @@
 
 > [!TIP]
 > When you start, your Docker directory in iCloud should look something like this:
-> ``` .
-> ├── database
-> └── docker
->    ├── .env
->    ├── docker-compose.yaml
->    ├── env.template
->    ├── init-training.sql
->    ├── metabase-setup.sh
->    └── run_docker.sh
-> ```
+ ``` .
+ ├── database
+ └── docker
+    ├── .env
+    ├── docker-compose.yaml
+    ├── env.template
+    ├── init-training.sql
+    ├── metabase-setup.sh
+    └── run_docker.sh
+ ```
 
 1. Update the .env file with the location of the iCloud project directory along with the local Users directory that will hold the .sh and .env files.
 2. Copy the `run_docker.sh` and `.env` files to the specified location in your Users directory.
