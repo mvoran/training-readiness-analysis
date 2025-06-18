@@ -1,6 +1,6 @@
 services:
   # ─────────────────────────────────────────────────────────
-  # 1) Postgres (holds both Metabase’s app DB and your “training_readiness” data)
+  # 1) Postgres (holds both Metabase's app DB and your "training_readiness" data)
   postgres:
     image: postgres:15
     container_name: postgres_db
@@ -21,9 +21,9 @@ services:
       retries: 10
 
   # ─────────────────────────────────────────────────────────
-  # 2) Metabase (no manual setup; we’ll call /api/setup to create admin + add the external DB)
+  # 2) Metabase (no manual setup; we'll call /api/setup to create admin + add the external DB)
   metabase:
-    image: metabase/metabase:v0.55.1
+    image: metabase/metabase:v0.55.4.1
     container_name: metabase
     ports:
       - "3000:3000"
@@ -57,7 +57,7 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      # Wait until Metabase’s own HTTP API is responding
+      # Wait until Metabase's own HTTP API is responding
       test: ["CMD", "wget", "-qO-", "--retry-connrefused", "--timeout=2", "${MB_SITE_URL}/api/health"]
       interval: 10s
       timeout: 5s
@@ -76,20 +76,20 @@ services:
       # (A) Admin user to create
       MB_SETUP_EMAIL:       ${MB_SETUP_EMAIL}
       MB_SETUP_PASSWORD:    ${MB_SETUP_PASSWORD}
-      MB_SETUP_FIRST_NAME:  ${MB_SETUP_FIRST_NAME}   # e.g. “Admin”
-      MB_SETUP_LAST_NAME:   ${MB_SETUP_LAST_NAME}    # e.g. “User”
+      MB_SETUP_FIRST_NAME:  ${MB_SETUP_FIRST_NAME}   # e.g. "Admin"
+      MB_SETUP_LAST_NAME:   ${MB_SETUP_LAST_NAME}    # e.g. "User"
 
-      # (B) Application‐wide preferences
-      MB_SITE_NAME:         ${MB_SITE_NAME}          # e.g. “My Metabase”
-      MB_SITE_LOCALE:       ${MB_SITE_LOCALE}        # e.g. “en_US”
-      MB_SITE_URL:          ${MB_SITE_URL}           # e.g. “http://localhost:3000” (default is "http://metabase:3000")
+      # (B) Application-wide preferences
+      MB_SITE_NAME:         ${MB_SITE_NAME}          # e.g. "My Metabase"
+      MB_SITE_LOCALE:       ${MB_SITE_LOCALE}        # e.g. "en_US"
+      MB_SITE_URL:          ${MB_SITE_URL}           # e.g. "http://localhost:3000" (default is "http://metabase:3000")
 
       # (C) External data source details
-      EXT_DB_NAME:          ${EXT_DB_NAME}           # “training_readiness”
-      EXT_DB_HOST:          ${EXT_DB_HOST}           # “postgres”
+      EXT_DB_NAME:          ${EXT_DB_NAME}           # "training_readiness"
+      EXT_DB_HOST:          ${EXT_DB_HOST}           # "postgres"
       EXT_DB_PORT:          ${EXT_DB_PORT}           # 5432
-      EXT_DB_USER:          ${EXT_DB_USER}           # “metabase”
-      EXT_DB_PASS:          ${EXT_DB_PASS}           # “metabase”
+      EXT_DB_USER:          ${EXT_DB_USER}           # "metabase"
+      EXT_DB_PASS:          ${EXT_DB_PASS}           # "metabase"
 
     entrypoint: ["/metabase-setup.sh"]
     volumes:
