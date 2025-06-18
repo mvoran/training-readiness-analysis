@@ -12,9 +12,7 @@
 > Running `docker pull metabase/metabase:latest` won't necessarily work as **latest** may not have an **arm64** version.
 
 1. Find the latest version arm64 version here: https://hub.docker.com/r/metabase/metabase/tags.
-2. From Docker Desktop open Terminal and pull the Docker image, e.g., `docker pull metabase/metabase:v0.55.4.1`.
-3. Run the Docker image, e.g.,: `docker run -d --name metabase -p 3000:3000 \metabase/metabase:v0.55.4.1`.
-    1. Note that if you are running a version other than **latest** you need to include the tag.
+2. In the `docker-compose.yaml` file update the metabase **image** tag, e.g., `metabase/metabase:v0.55.4.1`.
 
 ## Configure Metabase
 > [!NOTE]
