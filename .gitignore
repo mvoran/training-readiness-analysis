@@ -1,6 +1,10 @@
 # Data files
 *.xlsx
 *.csv
+*.xml
+*.gpx
+*.zip
+*.txt
 
 # Database files
 *.duckdb

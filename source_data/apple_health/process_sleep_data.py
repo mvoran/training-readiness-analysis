@@ -183,11 +183,14 @@ def save_sleep_analysis(output_data, output_file='sleep_analysis.csv'):
 
 def main(debug=False):
     """Main function to process Apple Health sleep data"""
-    xml_file = 'raw/apple_health_export/export.xml'
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    xml_file = os.path.join(script_dir, 'raw/apple_health_export/export.xml')
     
     # Generate timestamped filename
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    output_file = f'cleaned/apple_sleep_analysis_{timestamp}.csv'
+    output_file = os.path.join(script_dir, f'cleaned/apple_sleep_analysis_{timestamp}.csv')
     
     try:
         # Extract sleep data from XML
