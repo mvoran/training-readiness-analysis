@@ -12,7 +12,7 @@ else
   exit 1
 fi
 
-# From .env file  
+# From .env file
 ICLOUD_DIR="$ICLOUD_DIR"
 LOCAL_DIR="$LOCAL_DIR"
 

@@ -2,14 +2,14 @@ import duckdb
 from datetime import datetime
 
 # 1) Connect to your DuckDB (in‐memory or on‐disk)
-con = duckdb.connect('../training_readiness.duckdb')
+con = duckdb.connect("../training_readiness.duckdb")
 
 # 2) Build the timestamp string in yyyymmdd_hhmmss format
-ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 #    e.g. '20250602_153045'
 
 # 3) Construct the full filename
-outfile = f'../data/rolling_1wk_stress_{ts}.csv'
+outfile = f"../data/rolling_1wk_stress_{ts}.csv"
 
 # 4) Run the COPY statement with that literal filename
 sql = f"""

@@ -61,4 +61,4 @@ clean:
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
 	rm -rf .pytest_cache
 	rm -rf htmlcov
-	rm -rf .coverage 
+	rm -rf .coverage

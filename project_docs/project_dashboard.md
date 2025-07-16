@@ -1,9 +1,9 @@
 # Training Insights Dashboard — Project Charter & Delivery Plan
 
-**Document Info**  
-Author: Mike Voran  
-Version: 1.0  
-Date: 2025‑05‑30  
+**Document Info**
+Author: Mike Voran
+Version: 1.0
+Date: 2025‑05‑30
 
 
 ### Revision History
@@ -48,12 +48,12 @@ Date: 2025‑05‑30
 
 ## 3. Definition of Done
 
-* A single GitHub Action refreshes all sources nightly.  
-* Fresh data stored in GCS and materialised into DuckDB/MotherDuck **without manual steps**.  
-* Dashboard loads in < 3 s and reflects previous day’s data.  
-* ETL failures alert within 15 min.  
-* Run‑cost ≤ US $15 per month.  
-* Onboarding doc enables a new engineer to fix or extend the stack in ≤ 1 day.  
+* A single GitHub Action refreshes all sources nightly.
+* Fresh data stored in GCS and materialised into DuckDB/MotherDuck **without manual steps**.
+* Dashboard loads in < 3 s and reflects previous day’s data.
+* ETL failures alert within 15 min.
+* Run‑cost ≤ US $15 per month.
+* Onboarding doc enables a new engineer to fix or extend the stack in ≤ 1 day.
 
 ---
 
@@ -81,9 +81,9 @@ Date: 2025‑05‑30
 
 ## 6. Next‑Step Checklist (Week 1)
 
-1. **Metric Storm** – 90‑min workshop to brainstorm & rank KPIs.  
-2. **BI Bake‑off** – Half‑day to replicate 2‑3 charts in Looker, Metabase, Superset using a sample CSV.  
-3. **Comparison Matrix & Charter Sign‑Off** – Choose tool, lock first KPIs (**M0**).  
+1. **Metric Storm** – 90‑min workshop to brainstorm & rank KPIs.
+2. **BI Bake‑off** – Half‑day to replicate 2‑3 charts in Looker, Metabase, Superset using a sample CSV.
+3. **Comparison Matrix & Charter Sign‑Off** – Choose tool, lock first KPIs (**M0**).
 
 ---
 

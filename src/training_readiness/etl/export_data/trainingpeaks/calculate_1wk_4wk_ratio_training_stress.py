@@ -2,14 +2,14 @@ import duckdb
 from datetime import datetime
 
 # 1) Connect to your DuckDB (in‐memory or on‐disk)
-con = duckdb.connect('../training_readiness.duckdb')
+con = duckdb.connect("../training_readiness.duckdb")
 
 # 2) Build the timestamp string in yyyymmdd_hhmmss format
-ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+ts = datetime.now().strftime("%Y%m%d_%H%M%S")
 #    e.g. '20250602_153045'
 
 # 3) Construct the full filename
-outfile = f'../data/rolling_1wk_4wk_stress_ratio_{ts}.csv'
+outfile = f"../data/rolling_1wk_4wk_stress_ratio_{ts}.csv"
 
 # 4) Run the COPY statement with that literal filename
 sql = f"""
@@ -50,7 +50,7 @@ COPY (
     daily_stress,
     rolling_7d_stress,
     rolling_28d_stress,
-    CASE 
+    CASE
       WHEN rolling_28d_stress = 0 THEN 0
       ELSE CAST(ROUND(rolling_7d_stress::FLOAT / rolling_28d_stress::FLOAT, 2) AS FLOAT)
     END as stress_ratio

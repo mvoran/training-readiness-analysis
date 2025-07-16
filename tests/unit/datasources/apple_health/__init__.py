@@ -1,1 +1,1 @@
-# Apple Health data source tests package 
+# Apple Health data source tests package

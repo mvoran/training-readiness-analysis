@@ -5,22 +5,31 @@ import duckdb
 from pathlib import Path
 import jinja2
 
+
 def parse_args():
-    parser = argparse.ArgumentParser(description='Load TrainingPeaks data into DuckDB')
-    parser.add_argument('file_path', help='Path to the CSV or Excel file to load')
-    parser.add_argument('-r', '--replace', action='store_true',
-                      help='Replace existing data instead of appending')
+    parser = argparse.ArgumentParser(description="Load TrainingPeaks data into DuckDB")
+    parser.add_argument("file_path", help="Path to the CSV or Excel file to load")
+    parser.add_argument(
+        "-r",
+        "--replace",
+        action="store_true",
+        help="Replace existing data instead of appending",
+    )
     return parser.parse_args()
+
 
 def get_file_type(file_path):
     """Determine if the file is CSV or Excel based on extension."""
     path = Path(file_path)
-    if path.suffix.lower() == '.csv':
-        return 'csv'
-    elif path.suffix.lower() in ['.xlsx', '.xls']:
-        return 'excel'
+    if path.suffix.lower() == ".csv":
+        return "csv"
+    elif path.suffix.lower() in [".xlsx", ".xls"]:
+        return "excel"
     else:
-        raise ValueError(f"Unsupported file type: {path.suffix}. Only .csv and .xlsx/.xls files are supported.")
+        raise ValueError(
+            f"Unsupported file type: {path.suffix}. Only .csv and .xlsx/.xls files are supported."
+        )
+
 
 def main():
     args = parse_args()
@@ -36,12 +45,10 @@ def main():
 
     # Read the template SQL
     template = jinja2.Template(sql_template_path.read_text())
-    
+
     # Render the template with our parameters
     sql_text = template.render(
-        FILE_PATH=file_path,
-        FILE_TYPE=file_type,
-        REPLACE_MODE=args.replace
+        FILE_PATH=file_path, FILE_TYPE=file_type, REPLACE_MODE=args.replace
     )
 
     con = duckdb.connect(str(db_path))
@@ -49,7 +56,7 @@ def main():
     # Connect to the database and execute the SQL
     try:
         # Install & load the extension if needed
-        if file_type == 'excel':
+        if file_type == "excel":
             con.execute("INSTALL excel;")
             con.execute("LOAD excel;")
         # Execute the filled‐in SQL
@@ -61,6 +68,7 @@ def main():
         sys.exit(1)
     finally:
         con.close()
+
 
 if __name__ == "__main__":
     main()

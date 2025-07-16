@@ -50,7 +50,7 @@ TrainingReadiness/
    source .venv/bin/activate
    pip install -e ".[dev]"
    ```
-   
+
    The project uses modern Python packaging with `pyproject.toml`. All dependencies are managed automatically.
 
 2. **DuckDB CLI** (optional but recommended):
@@ -142,7 +142,7 @@ python3 calculate_48hr_training_stress.py
      MB_SETUP_FIRST_NAME=Your
      MB_SETUP_LAST_NAME=Name
      MB_SITE_NAME=Training Readiness
-     
+
      # Path configuration
      ICLOUD_DIR=/path/to/your/iCloud/project/directory
      LOCAL_DIR=/Users/yourusername/Docker/Training_Readiness

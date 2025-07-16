@@ -117,18 +117,18 @@ from your_module import your_function
 
 class TestYourFunction:
     """Test cases for your_function"""
-    
+
     def test_basic_functionality(self):
         """Test basic functionality"""
         # Arrange
         input_data = "test"
-        
+
         # Act
         result = your_function(input_data)
-        
+
         # Assert
         assert result == "expected"
-    
+
     def test_edge_case(self):
         """Test edge case handling"""
         # Test edge cases like empty input, invalid data, etc.
@@ -154,7 +154,7 @@ import os
 def test_file_operation():
     with tempfile.NamedTemporaryFile(mode='w', suffix='.csv', delete=False) as f:
         temp_file = f.name
-    
+
     try:
         # Test with temp_file
         pass
@@ -236,4 +236,4 @@ When adding new functionality:
 - Performance tests for large datasets
 - End-to-end tests for complete workflows
 - Test fixtures for common data scenarios
-- Automated test data generation 
+- Automated test data generation
