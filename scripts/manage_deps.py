@@ -15,13 +15,21 @@ import argparse
 from pathlib import Path
 
 
-def run_command(cmd, check=True):
-    """Run a command and return the result"""
+def run_command(cmd, check=True, timeout=30):
+    """Run a command and return the result with timeout"""
     try:
         result = subprocess.run(
-            cmd, shell=True, capture_output=True, text=True, check=check
+            cmd,
+            shell=True,
+            capture_output=True,
+            text=True,
+            check=check,
+            timeout=timeout,
         )
         return result.stdout, result.stderr, result.returncode
+    except subprocess.TimeoutExpired:
+        print(f"  ⏰ Command timed out after {timeout} seconds: {cmd}")
+        return "", "Command timed out", 1
     except subprocess.CalledProcessError as e:
         return e.stdout, e.stderr, e.returncode
 
@@ -276,14 +284,14 @@ def security_check():
     """Check for security vulnerabilities"""
     print("🔒 Checking for security vulnerabilities...")
 
-    # Install safety if not present
-    stdout, stderr, code = run_command("pip show safety", check=False)
+    # Install pip-audit if not present
+    stdout, stderr, code = run_command("pip show pip-audit", check=False)
     if code != 0:
-        print("📦 Installing safety...")
-        run_command("pip install safety")
+        print("📦 Installing pip-audit...")
+        run_command("pip install pip-audit")
 
-    # Run security check
-    stdout, stderr, code = run_command("safety check", check=False)
+    # Run security audit
+    stdout, stderr, code = run_command("pip-audit", check=False)
 
     if code == 0:
         print("✅ No security vulnerabilities found!")

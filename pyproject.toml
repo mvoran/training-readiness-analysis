@@ -46,6 +46,9 @@ dev = [
 [project.scripts]
 training-readiness = "training_readiness.cli:main"
 
+[tool.setuptools.packages.find]
+where = ["src"]
+
 [tool.black]
 line-length = 88
 target-version = ['py38']
