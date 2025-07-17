@@ -14,6 +14,9 @@ tests/
 │   │       ├── test_extract_resting_hr_data_from_xml.py
 │   │       ├── test_process_resting_hr_data.py
 │   │       ├── test_save_resting_hr_analysis.py
+│   │       ├── test_extract_sleep_data_from_xml.py
+│   │       ├── test_process_sleep_data.py
+│   │       ├── test_save_sleep_analysis.py
 │   │       └── test_format_datetime.py
 │   └── ...                     # Other unit test categories
 ├── integration/                # Integration tests (future)
@@ -27,15 +30,84 @@ Unit tests focus on testing individual functions and methods in isolation. They 
 
 **Current Coverage:**
 - **Apple Health Data Processing** (`tests/unit/datasources/apple_health/`)
-  - `extract_resting_hr_data_from_xml()` - XML parsing and data extraction
-  - `process_resting_hr_data()` - Data processing and aggregation
-  - `save_resting_hr_analysis()` - CSV file output
-  - `format_datetime()` - Date/time formatting utilities
+  - **Resting Heart Rate Tests:**
+    - `extract_resting_hr_data_from_xml()` - XML parsing and data extraction
+    - `process_resting_hr_data()` - Data processing and aggregation
+    - `save_resting_hr_analysis()` - CSV file output
+  - **Sleep Data Tests:**
+    - `extract_sleep_data_from_xml()` - XML parsing and sleep data extraction
+    - `process_sleep_data()` - Sleep session processing and aggregation
+    - `save_sleep_analysis()` - Sleep analysis CSV file output
+  - **Utility Tests:**
+    - `format_datetime()` - Date/time formatting utilities
 
 ### Integration Tests (`tests/integration/`)
 Integration tests verify that different components work together correctly. These tests use real data files and database connections.
 
 *Note: Integration tests are planned for future development.*
+
+## Apple Health Sleep Data Tests
+
+The Apple Health sleep data tests (`tests/unit/datasources/apple_health/`) provide comprehensive coverage for processing sleep data from Apple Health XML exports.
+
+### Test Files Overview
+
+#### `test_extract_sleep_data_from_xml.py`
+Tests the XML parsing functionality for sleep data extraction:
+- **File Not Found Handling**: Tests proper error handling when XML file doesnt exist
+- **Empty XML Files**: Validates handling of empty or malformed XML content
+- **Valid Sleep Records**: Tests extraction of different sleep types (InBed, Asleep, Awake, Deep, Core, REM)
+- **Mixed Record Types**: Ensures only sleep records are extracted from files with multiple data types
+- **Missing Attributes**: Tests graceful handling of records with missing start/end dates or sleep types
+- **Different Sleep Types**: Validates extraction of all supported sleep categories
+
+#### `test_process_sleep_data.py`
+Tests the sleep data processing and aggregation logic:
+- **Empty Data Handling**: Tests processing of empty datasets
+- **Single Session Processing**: Validates basic sleep session aggregation
+- **Multiple Sessions**: Tests handling of multiple sleep sessions across different days
+- **Session Grouping**: Ensures proper grouping of sleep records into sessions with gap detection
+- **Sleep Type Classification**: Tests aggregation of different sleep types (Deep, Core, REM, Awake)
+- **Data Filtering**: Validates exclusion of sessions with "Unspecified sleep types
+- **Value Rounding**: Tests proper decimal place rounding for time calculations
+- **Date Formatting**: Ensures correct date formatting for sleep sessions
+- **Session Boundaries**: Tests handling of sleep sessions crossing midnight
+
+#### `test_save_sleep_analysis.py`
+Tests the CSV output functionality for sleep analysis:
+- **Empty Data Saving**: Tests saving empty datasets with proper headers
+- **Single Record Output**: Validates saving of individual sleep session records
+- **Multiple Records**: Tests saving multiple sleep sessions to CSV
+- **Decimal Values**: Ensures proper handling of fractional time values
+- **CSV Header Format**: Validates correct column headers and field names
+- **File Operations**: Tests file creation, overwriting, and default filename generation
+- **Data Integrity**: Ensures all sleep metrics are properly saved (Total_Time_Asleep, Deep_Sleep, Core_Sleep, REM_Sleep, Awake_Time)
+
+### Sleep Data Metrics Tested
+
+The tests validate the following sleep metrics:
+- **Total_Time_Asleep**: Total sleep duration excluding awake time
+- **Total_Deep_Sleep**: Deep sleep duration (HKCategoryValueSleepAnalysisAsleepDeep)
+- **Total_Core_Sleep**: Core sleep duration (HKCategoryValueSleepAnalysisAsleepCore)
+- **Total_REM_Sleep**: REM sleep duration (HKCategoryValueSleepAnalysisAsleepREM)
+- **Total_Awake_Time**: Awake time during sleep sessions (HKCategoryValueSleepAnalysisAwake)
+- **Sleep_Start/Sleep_End**: Session start and end timestamps
+- **Sleep_Date**: Date of the sleep session
+
+### Running Sleep Data Tests
+
+```bash
+# Run all Apple Health sleep tests
+pytest tests/unit/datasources/apple_health/test_extract_sleep_data_from_xml.py
+pytest tests/unit/datasources/apple_health/test_process_sleep_data.py
+pytest tests/unit/datasources/apple_health/test_save_sleep_analysis.py
+
+# Run specific sleep test categories
+pytest tests/unit/datasources/apple_health/ -k "sleep"
+
+# Run with verbose output for detailed test information
+pytest tests/unit/datasources/apple_health/ -v -k "sleep"
+```
 
 ## Running Tests
 
@@ -70,6 +142,11 @@ pytest tests/unit/datasources/apple_health/test_process_resting_hr_data.py::Test
 
 # Run specific test method
 pytest tests/unit/datasources/apple_health/test_process_resting_hr_data.py::TestProcessRestingHrData::test_multiple_days
+
+# Run sleep data specific tests
+pytest tests/unit/datasources/apple_health/test_extract_sleep_data_from_xml.py
+pytest tests/unit/datasources/apple_health/test_process_sleep_data.py::TestProcessSleepData
+pytest tests/unit/datasources/apple_health/test_save_sleep_analysis.py::TestSaveSleepAnalysis::test_save_multiple_records
 ```
 
 ### Test Markers
