@@ -34,7 +34,26 @@ make deps-full
 
 ## How to Add Dependencies
 
-When you add an import like `import requests` to your code, you need to add it to the `dependencies` list in `pyproject.toml`:
+The project includes an automated tool to add dependencies. When you add an import like `import requests` to your code, use the automated dependency manager:
+
+```bash
+# Add a main dependency
+python scripts/manage_deps.py add requests
+
+# Add a development dependency (testing, linting, etc.)
+python scripts/manage_deps.py add pytest --dev
+```
+
+**What the tool does:**
+1. **Installs the package** to get the latest version
+2. **Determines the version** automatically
+3. **Adds it to pyproject.toml** with proper `>=` version constraint
+4. **Checks for duplicates** to avoid conflicts
+5. **Maintains formatting** of the TOML file
+
+### Manual Method (if needed)
+
+If you need to add dependencies manually, add them to the appropriate section in `pyproject.toml`:
 
 ```toml
 dependencies = [
@@ -43,46 +62,31 @@ dependencies = [
     # ... existing dependencies ...
     "requests>=2.31.0",  # Add your new dependency here
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    # ... existing dev dependencies ...
+    "your-dev-package>=1.0.0",  # Add here
+]
 ```
 
-### Finding the Right Version Constraint
-
-1. **For new dependencies**: Start with a recent stable version
-   ```bash
-   # Check what version you're using
-   pip show requests
-
-   # Or install the latest and see what you get
-   pip install requests
-   pip show requests
-   ```
-
-2. **Version constraint patterns**:
-   - `"requests>=2.31.0"` - At least version 2.31.0 (recommended)
-   - `"requests==2.31.0"` - Exactly version 2.31.0 (avoid unless necessary)
-   - `"requests~=2.31.0"` - At least 2.31.0 but less than 2.32.0 (pinned minor)
-   - `"requests"` - Any version (not recommended for production)
-
-3. **For development dependencies** (testing, linting, etc.):
-   ```toml
-   [project.optional-dependencies]
-   dev = [
-       "pytest>=7.0.0",
-       # ... existing dev dependencies ...
-       "your-dev-package>=1.0.0",  # Add here
-   ]
-   ```
+**Version constraint patterns:**
+- `"requests>=2.31.0"` - At least version 2.31.0 (recommended)
+- `"requests==2.31.0"` - Exactly version 2.31.0 (avoid unless necessary)
+- `"requests~=2.31.0"` - At least 2.31.0 but less than 2.32.0 (pinned minor)
+- `"requests"` - Any version (not recommended for production)
 
 ### Quick Workflow
 ```bash
 # 1. Add import to your .py file
-# 2. Add dependency to pyproject.toml with >= version
-# 3. Install and test
-pip install -e .
+# 2. Use automated tool to add dependency
+python scripts/manage_deps.py add your-package
+
+# 3. Verify everything works
 make deps-validate
 
 # 4. If it works, you're done!
-# If not, adjust the version constraint
 ```
 
 ## When to Use Each Command
@@ -117,8 +121,8 @@ make deps-validate
 
 **Scenario 1: You just added a new package**
 ```bash
-# 1. Add to pyproject.toml and install
-pip install -e .
+# 1. Use automated tool to add dependency
+python scripts/manage_deps.py add your-package
 
 # 2. Verify it works
 make deps-validate

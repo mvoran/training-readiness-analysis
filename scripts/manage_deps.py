@@ -13,6 +13,7 @@ import subprocess
 import sys
 import argparse
 from pathlib import Path
+import re
 
 
 def run_command(cmd, check=True, timeout=30):
@@ -355,6 +356,107 @@ def full_check():
         print("✅ All dependency checks passed!")
 
 
+def add_dependency(package_name, version_spec=None, dev=False):
+    """Add a new dependency to pyproject.toml and install it"""
+    print(f"📦 Adding {package_name} to dependencies...")
+
+    # First, try to install the package to get its version
+    install_cmd = f"pip install {package_name}"
+    if version_spec:
+        install_cmd += f"{version_spec}"
+
+    print(f"🔧 Installing {package_name}...")
+    stdout, stderr, code = run_command(install_cmd, check=False)
+
+    if code != 0:
+        print(f"❌ Failed to install {package_name}:")
+        print(stderr)
+        return False
+
+    # Get the installed version
+    stdout, stderr, code = run_command(f"pip show {package_name}", check=False)
+    if code != 0:
+        print(f"❌ Could not get version info for {package_name}")
+        return False
+
+    installed_version = None
+    for line in stdout.split("\n"):
+        if line.startswith("Version:"):
+            installed_version = line.split(":", 1)[1].strip()
+            break
+
+    if not installed_version:
+        print(f"❌ Could not determine version for {package_name}")
+        return False
+
+    print(f"📋 Found version: {installed_version}")
+    # Read current pyproject.toml
+    try:
+        with open("pyproject.toml", "r") as f:
+            content = f.read()
+    except FileNotFoundError:
+        print("❌ pyproject.toml not found")
+        return False
+
+    # Parse the TOML content to find dependencies section
+    if dev:
+        section_pattern = r"\[project\.optional-dependencies\]\s*\n(.*?)(?=\n\[|\Z)"
+        section_name = "dev"
+    else:
+        section_pattern = r"\[project\]\s*\n(.*?)(?=\n\[|\Z)"
+        section_name = "dependencies"
+    section_match = re.search(section_pattern, content, re.DOTALL)
+    if not section_match:
+        print(f"❌ Could not find [project.{section_name}] section in pyproject.toml")
+        return False
+
+    section_content = section_match.group(1)
+
+    # Check if package is already in dependencies
+    if f"{package_name}>=" in section_content or f"{package_name}==" in section_content:
+        print(f"⚠️  {package_name} is already in {section_name}")
+        return True
+
+    # Add the new dependency
+    dependency_line = f"    {package_name}>={installed_version},\n"
+
+    # Find the dependencies list
+    if dev:
+        deps_pattern = r"(dev\s*=\s*\[)(.*?)(\])"
+    else:
+        deps_pattern = r"(dependencies\s*=\s*\[)(.*?)(\])"
+
+    deps_match = re.search(deps_pattern, section_content, re.DOTALL)
+    if not deps_match:
+        print(f"❌ Could not find {section_name} list in pyproject.toml")
+        return False
+
+    deps_start = deps_match.group(1)
+    deps_content = deps_match.group(2)
+    deps_end = deps_match.group(3)
+
+    # Add the new dependency to the list
+    new_deps_content = deps_content.rstrip() + "\n" + dependency_line
+
+    # Replace the dependencies section
+    new_section_content = section_content.replace(
+        deps_start + deps_content + deps_end, deps_start + new_deps_content + deps_end
+    )
+
+    # Replace the section in the full content
+    new_content = content.replace(section_content, new_section_content)
+
+    # Write back to pyproject.toml
+    try:
+        with open("pyproject.toml", "w") as f:
+            f.write(new_content)
+        print(f"✅ Added {package_name}>=[{installed_version}] to {section_name}")
+        return True
+    except Exception as e:
+        print(f"❌ Failed to write pyproject.toml: {e}")
+        return False
+
+
 def main():
     parser = argparse.ArgumentParser(description="Manage project dependencies")
     parser.add_argument(
@@ -368,11 +470,18 @@ def main():
             "constraints",
             "upgradeable",
             "full",
+            "add",
         ],
         help="Action to perform",
     )
     parser.add_argument(
         "--force", action="store_true", help="Force updates even if conflicts exist"
+    )
+    parser.add_argument(
+        "--dev", action="store_true", help="Add to dev dependencies (for add' action)"
+    )
+    parser.add_argument(
+        "package", nargs="?", help="Package name to add (for add action)"
     )
 
     args = parser.parse_args()
@@ -384,7 +493,23 @@ def main():
         )
         sys.exit(1)
 
-    if args.action == "check":
+    if args.action == "add":
+        if not args.package:
+            print("❌ Error: Package name required for 'add' action")
+            print("Usage: python scripts/manage_deps.py add <package_name> [--dev]")
+            sys.exit(1)
+
+        success = add_dependency(args.package, dev=args.dev)
+        if success:
+            print(f"✅ Successfully added {args.package} to pyproject.toml")
+            print(
+                "💡 Run 'python scripts/manage_deps.py update' to ensure everything is in sync"
+            )
+        else:
+            print(f"❌ Failed to add {args.package}")
+            sys.exit(1)
+
+    elif args.action == "check":
         check_outdated()
         print()
         check_conflicts()
