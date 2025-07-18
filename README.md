@@ -227,82 +227,23 @@ pytest tests/unit/datasources/apple_health/
 
 ### Dependency Management
 
-The project includes comprehensive automated tools for dependency management that use pip's built-in resolver to avoid hardcoded version constraints.
+The project includes automated tools for dependency management. See [docs/dependency-management.md](docs/dependency-management.md) for comprehensive guidance.
 
-#### Using the Python Script
+**Quick reference:**
 ```bash
-# Check for outdated packages and conflicts
-python scripts/manage_deps.py check
-
-# Check which packages can actually be upgraded vs. constrained
-python scripts/manage_deps.py upgradeable
-
-# Update dependencies safely (uses pip's resolver)
-python scripts/manage_deps.py update
-
-# Full dependency health check
-python scripts/manage_deps.py full
-
-# Validate environment setup
-python scripts/manage_deps.py validate
-
-# Security vulnerability check
-python scripts/manage_deps.py security
-
-# Show dependency information and constraints
-python scripts/manage_deps.py constraints
-```
-
-#### Using Make Commands
-```bash
-# Check dependencies
+# Before commits
 make deps-check
 
-# Check which packages are upgradeable
-make deps-upgradeable
-
-# Update dependencies
-make deps-update
-
-# Security check
+# When adding new dependencies
+# 1. Add to pyproject.toml
+# 2. Install and validate
+pip install -e .
+make deps-validate
 make deps-security
 
-# Full health check
-make deps-full
-
-# See all available commands
-make help
-```
-
-#### Key Features
-
-- **Smart Constraint Detection**: Automatically identifies which packages are constrained by dependencies
-- **No Hardcoded Logic**: Uses pip's built-in tools instead of manual version parsing
-- **Clear Guidance**: Shows exactly what's constraining packages and why
-- **Safe Updates**: Lets pip's dependency resolver handle conflicts automatically
-- **Comprehensive Health Checks**: Validates environment, security, and configuration
-
-#### Example Output
-
-```bash
-$ python scripts/manage_deps.py upgradeable
-🔍 Checking which packages can be upgraded...
-📦 Found 5 outdated packages
-
-🔍 Testing full project upgrade...
-
-📊 Summary:
-  ✅ Upgradeable: 0 packages
-  ⚠️  Constrained: 5 packages
-
-⚠️  Constrained packages: duckdb, filelock, psutil, pydantic, pydantic_core
-💡 These packages are pinned by dependency constraints
-💡 They cannot be upgraded without breaking other dependencies
-
-🔍 Checking constraints...
-  📋 duckdb:
-    Required by: duckdb_extensions, training-readiness
-      duckdb_extensions requires: duckdb==1.3.0
+# For maintenance
+make deps-upgradeable
+make deps-update
 ```
 
 ## Troubleshooting
