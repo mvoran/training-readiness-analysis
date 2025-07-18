@@ -1,4 +1,4 @@
-.PHONY: help install test deps-check deps-update deps-security clean
+.PHONY: help install test test-cov lint lint-fix deps-check deps-update deps-security clean
 
 # Default target
 help:
@@ -6,6 +6,8 @@ help:
 	@echo "  install      - Install project dependencies"
 	@echo "  test         - Run all tests"
 	@echo "  test-cov     - Run tests with coverage"
+	@echo "  lint         - Run all linting checks (before commit)"
+	@echo "  lint-fix     - Run linting and auto-fix what can be fixed"
 	@echo "  deps-check   - Check for outdated packages and conflicts"
 	@echo "  deps-update  - Update dependencies safely"
 	@echo "  deps-security- Check for security vulnerabilities"
@@ -23,6 +25,16 @@ test:
 # Run tests with coverage
 test-cov:
 	pytest --cov=src/training_readiness --cov-report=html
+
+# Run all linting checks (use before commit)
+lint:
+	@echo "🔍 Running linting checks..."
+	@pre-commit run --all-files
+
+# Run linting and auto-fix what can be fixed
+lint-fix:
+	@echo "🔧 Running linting with auto-fixes..."
+	@pre-commit run --all-files --hook-stage manual
 
 # Check dependencies
 deps-check:
