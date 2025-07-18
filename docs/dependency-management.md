@@ -19,10 +19,16 @@ make deps-security
 
 **Before committing code:**
 ```bash
-# Quick health check - catches most issues
+# 1. Run linting checks (catches formatting issues)
+make lint
+
+# 2. If linting fails, auto-fix what can be fixed
+make lint-fix
+
+# 3. Quick dependency health check
 make deps-check
 
-# If you've been working for a while, run a full check
+# 4. If you've been working for a while, run a full check
 make deps-full
 ```
 
@@ -123,10 +129,17 @@ make deps-security
 
 **Scenario 2: You're about to commit**
 ```bash
-# Quick check - should pass
+# 1. Run linting checks first
+make lint
+
+# 2. If linting fails, auto-fix and re-check
+make lint-fix
+make lint
+
+# 3. Quick dependency check
 make deps-check
 
-# If it fails, run full check to understand the issue
+# 4. If it fails, run full check to understand the issue
 make deps-full
 ```
 
