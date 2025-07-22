@@ -1,11 +1,15 @@
 # Data files
+
 data/
+maps/
 *.xlsx
 *.csv
 *.xml
 *.gpx
 *.zip
 *.txt
+!src/training_readiness/resources/**/*.csv
+!src/training_readiness/resources/**/*.json
 
 # Database files
 *.duckdb
