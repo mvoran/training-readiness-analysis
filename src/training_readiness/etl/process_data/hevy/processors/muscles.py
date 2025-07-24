@@ -1,27 +1,27 @@
+# src/training_readiness/etl/process_data/hevy/processors/muscles.py
+from pathlib import Path
+import json
 import pandas as pd
-from importlib.resources import files
-
-DATA_DIR = files("training_readiness.resources.hevy")  # see §3
 
 
-def add_muscle_groups(df: pd.DataFrame) -> pd.DataFrame:
-    rollup = pd.read_csv(DATA_DIR / "primary_muscle_rollup.csv")
+def add_muscle_groups(
+    df: pd.DataFrame,
+    exercises_path: Path = Path("data/raw/hevy/hevy_exercises.json"),
+    rollup_path: Path = Path(
+        "src/training_readiness/resources/hevy/primary_muscle_rollup.csv"
+    ),
+) -> pd.DataFrame:
+    templates = json.loads(exercises_path.read_text(encoding="utf-8"))
 
-    # lookup from exercise title → primary / secondary muscles
-    templates = pd.read_json(DATA_DIR / "hevy_exercises.json")
-    lookup = templates.set_index("title")[
-        ["primary_muscle_group", "secondary_muscle_groups"]
-    ]
+    primary_lookup = {t["title"]: t["primary_muscle_group"] for t in templates}
+    secondary_lookup = {
+        t["title"]: ",".join(t["secondary_muscle_groups"] or []) for t in templates
+    }
 
-    df = df.join(lookup, on="exercise_title")
+    df["Primary Muscle"] = df["exercise_title"].map(primary_lookup).fillna("")
+    df["Secondary Muscles"] = df["exercise_title"].map(secondary_lookup).fillna("")
 
-    # explode list → comma-separated string
-    df["Secondary Muscles"] = df["secondary_muscle_groups"].apply(
-        lambda x: ",".join(x or [])
-    )
-    df = df.drop(columns="secondary_muscle_groups")
-
-    # map roll-ups
+    rollup = pd.read_csv(rollup_path)
     df = df.merge(
         rollup.rename(
             columns={
