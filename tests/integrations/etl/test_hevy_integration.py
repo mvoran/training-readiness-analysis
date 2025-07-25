@@ -56,6 +56,7 @@ class TestHevyIntegration:
                 "reps": [10, 8, 8, 10],
                 "weight": [135, 115, 0, 95],
                 "rpe": [8, 8, 8, 8],
+                "workout_name": ["Push Day", "Push Day", "Pull Day", "Pull Day"],
             }
         )
 
@@ -307,6 +308,60 @@ class TestHevyIntegration:
         known_row = result[result["exercise_title"] == "Bench Press"].iloc[0]
         assert known_row["Primary Muscle"] == "chest"
         assert known_row["Secondary Muscles"] == "triceps,shoulders"
+
+    def test_workflow_location_inference_from_workout_name(self):
+        """Test that location can be inferred from workout_name when date map lacks the date"""
+        # Write base sample workouts and exercises JSON
+        self.sample_workouts.to_csv(self.raw_dir / "hevy_workouts.csv", index=False)
+        with open(self.raw_dir / "hevy_exercises.json", "w") as f:
+            json.dump(self.sample_exercises, f)
+
+        # Write mapping files to maps dir
+        self.date_location_map.to_csv(
+            self.maps_dir / "workout_date_location.csv", index=False
+        )
+        self.location_rollup_map.to_csv(
+            self.maps_dir / "location_rollup.csv", index=False
+        )
+
+        # Create a new row: workout on a new date, with workout_name containing canonical location string
+        new_row = {
+            "workout_id": 3,
+            "title": "Leg Day",
+            "description": "Legs",
+            "start_time": "2024-01-17T16:00:00Z",
+            "end_time": "2024-01-17T17:00:00Z",
+            "exercise_title": "Squat",
+            "sets": 4,
+            "reps": 8,
+            "weight": 225,
+            "rpe": 9,
+            "workout_name": "Leg Day @ Secondary Gym",
+        }
+        workouts_with_inference = pd.concat(
+            [self.sample_workouts, pd.DataFrame([new_row])], ignore_index=True
+        )
+
+        # Call transform with both mapping files
+        result = transform(
+            workouts_with_inference,
+            exercises_path=self.raw_dir / "hevy_exercises.json",
+            date_map=self.maps_dir / "workout_date_location.csv",
+            rollup_map=self.maps_dir / "location_rollup.csv",
+        )
+
+        # Find the new Squat row
+        squat_row = result[result["exercise_title"] == "Squat"].iloc[0]
+        assert squat_row["location"] == "Secondary Gym"
+        assert squat_row["rollup_location"] == "Secondary"
+
+        # Existing row (Bench Press) still has original location
+        bench_row = result[result["exercise_title"] == "Bench Press"].iloc[0]
+        assert bench_row["location"] == "Primary Gym"
+
+        # Columns should include location and rollup_location
+        assert "location" in result.columns
+        assert "rollup_location" in result.columns
 
     def test_workflow_with_missing_files(self):
         """Test workflow behavior when required files are missing"""

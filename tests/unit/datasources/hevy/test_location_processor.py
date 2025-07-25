@@ -31,6 +31,11 @@ Vacation Gym,Other"""
             {
                 "workout_date": ["1/15/24", "1/16/24", "1/17/24"],
                 "exercise_title": ["Bench Press", "Squat", "Deadlift"],
+                "workout_name": [
+                    "Bench Press Session",
+                    "Squat Session",
+                    "Deadlift Session",
+                ],
             }
         )
 
@@ -69,7 +74,11 @@ Vacation Gym,Other"""
     def test_add_location_columns_missing_date_map(self):
         """Test handling when date map file is missing"""
         df = pd.DataFrame(
-            {"workout_date": ["1/15/24"], "exercise_title": ["Bench Press"]}
+            {
+                "workout_date": ["1/15/24"],
+                "exercise_title": ["Bench Press"],
+                "workout_name": ["Chest Day - Primary Gym"],
+            }
         )
 
         # Only provide rollup map
@@ -80,9 +89,11 @@ Vacation Gym,Other"""
 
             result = add_location_columns(df, date_map=None, rollup_map=rollup_map)
 
-            # Should return original dataframe unchanged
-            assert "location" not in result.columns
-            assert "rollup_location" not in result.columns
+            # Should have inferred location and rollup_location from workout_name
+            assert "location" in result.columns
+            assert "rollup_location" in result.columns
+            assert result.iloc[0]["location"] == "Primary Gym"
+            assert result.iloc[0]["rollup_location"] == "Primary"
             assert len(result) == 1
             assert result.iloc[0]["exercise_title"] == "Bench Press"
 
@@ -93,7 +104,11 @@ Vacation Gym,Other"""
     def test_add_location_columns_missing_rollup_map(self):
         """Test handling when rollup map file is missing"""
         df = pd.DataFrame(
-            {"workout_date": ["1/15/24"], "exercise_title": ["Bench Press"]}
+            {
+                "workout_date": ["1/15/24"],
+                "exercise_title": ["Bench Press"],
+                "workout_name": ["Some Workout"],
+            }
         )
 
         # Only provide date map
@@ -104,9 +119,10 @@ Vacation Gym,Other"""
 
             result = add_location_columns(df, date_map=date_map, rollup_map=None)
 
-            # Should return original dataframe unchanged
-            assert "location" not in result.columns
+            # Should have location from date_map, no rollup_location column
+            assert "location" in result.columns
             assert "rollup_location" not in result.columns
+            assert result.iloc[0]["location"] == "Primary Gym"
             assert len(result) == 1
             assert result.iloc[0]["exercise_title"] == "Bench Press"
 
@@ -117,7 +133,11 @@ Vacation Gym,Other"""
     def test_add_location_columns_both_files_missing(self):
         """Test handling when both mapping files are missing"""
         df = pd.DataFrame(
-            {"workout_date": ["1/15/24"], "exercise_title": ["Bench Press"]}
+            {
+                "workout_date": ["1/15/24"],
+                "exercise_title": ["Bench Press"],
+                "workout_name": ["Some Workout"],
+            }
         )
 
         result = add_location_columns(df, date_map=None, rollup_map=None)
@@ -131,7 +151,11 @@ Vacation Gym,Other"""
     def test_add_location_columns_nonexistent_files(self):
         """Test handling when mapping files don't exist"""
         df = pd.DataFrame(
-            {"workout_date": ["1/15/24"], "exercise_title": ["Bench Press"]}
+            {
+                "workout_date": ["1/15/24"],
+                "exercise_title": ["Bench Press"],
+                "workout_name": ["Some Workout"],
+            }
         )
 
         nonexistent_date_map = Path("nonexistent_date_map.csv")
@@ -153,6 +177,7 @@ Vacation Gym,Other"""
             {
                 "workout_date": ["1/15/24", "1/18/24"],  # 1/18/24 not in mapping
                 "exercise_title": ["Bench Press", "Squat"],
+                "workout_name": ["Bench Press", "Leg Day"],
             }
         )
 
@@ -187,6 +212,7 @@ Vacation Gym,Other"""
                 "exercise_title": ["Bench Press"],
                 "sets": [3],
                 "reps": [10],
+                "workout_name": ["Bench Press Session"],
             }
         )
 
@@ -218,7 +244,7 @@ Vacation Gym,Other"""
 
     def test_add_location_columns_empty_dataframe(self):
         """Test handling of empty dataframe"""
-        df = pd.DataFrame(columns=["workout_date"])
+        df = pd.DataFrame(columns=["workout_date", "workout_name"])
 
         date_map = Path("temp_date_map.csv")
         rollup_map = Path("temp_rollup_map.csv")
@@ -242,7 +268,11 @@ Vacation Gym,Other"""
     def test_add_location_columns_malformed_csv(self):
         """Test handling of malformed CSV files"""
         df = pd.DataFrame(
-            {"workout_date": ["1/15/24"], "exercise_title": ["Bench Press"]}
+            {
+                "workout_date": ["1/15/24"],
+                "exercise_title": ["Bench Press"],
+                "workout_name": ["Some Workout"],
+            }
         )
 
         # Create malformed CSV (missing required columns)
@@ -264,5 +294,29 @@ Vacation Gym,Other"""
         finally:
             if malformed_date_map.exists():
                 malformed_date_map.unlink()
+            if rollup_map.exists():
+                rollup_map.unlink()
+
+    def test_add_location_columns_infers_location_only_rollup(self):
+        """Test location inference when only rollup map is provided"""
+        df = pd.DataFrame(
+            {
+                "workout_name": ["Leg Day at Secondary Gym"],
+            }
+        )
+
+        rollup_map = Path("temp_rollup_map.csv")
+
+        try:
+            rollup_map.write_text(self.sample_rollup_data)
+
+            result = add_location_columns(df, date_map=None, rollup_map=rollup_map)
+
+            assert "location" in result.columns
+            assert "rollup_location" in result.columns
+            assert result.iloc[0]["location"] == "Secondary Gym"
+            assert result.iloc[0]["rollup_location"] == "Secondary"
+
+        finally:
             if rollup_map.exists():
                 rollup_map.unlink()
