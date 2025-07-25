@@ -9,13 +9,18 @@ Exports Hevy workout and exercise data using the Hevy API.
 """
 
 import os
+import sys
 import json
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from dotenv import load_dotenv
 import requests
 import pandas as pd
-from config import get_timezone_offset_hours
+
+# Add the project root to the path so we can import config
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../../"))
+
+from config import get_timezone_offset_hours  # noqa: E402
 
 # Load .env from project root
 project_root = Path(__file__).resolve().parents[4]
