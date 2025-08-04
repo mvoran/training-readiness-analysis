@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 from pathlib import Path
 from unittest.mock import patch
-from training_readiness.etl.transform_data.hevy.process_hevy_data import main
+from training_readiness.etl.transform_data.hevy.transform_hevy_data import main
 from training_readiness.etl.transform_data.hevy.hevy_pipeline import transform
 
 

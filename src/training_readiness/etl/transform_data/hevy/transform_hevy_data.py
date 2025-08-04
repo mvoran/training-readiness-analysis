@@ -1,7 +1,7 @@
 """
-Hevy Data Processing Script
+Transform Hevy Data Script
 
-This script processes raw Hevy workout data by:
+This script transforms raw Hevy workout data by:
 1. Adding time-based columns (workout_date, day_of_week)
 2. Mapping exercises to muscle groups using exercise templates
 3. Optionally adding location data using mapping files

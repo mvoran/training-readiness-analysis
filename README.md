@@ -27,7 +27,7 @@ TrainingReadiness/
 │   │   │   └── clean_trainingpeaks_data.py
 │   │   ├── hevy/
 │   │   │   ├── hevy_pipeline.py
-│   │   │   └── process_hevy_data.py
+│   │   │   └── transform_hevy_data.py
 │   │   └── apple_health/
 │   │       ├── process_sleep_data.py
 │   │       └── process_resting_hr_data.py

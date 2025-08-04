@@ -12,7 +12,7 @@ src/training_readiness/etl/
 │   │   ├── process_sleep_data.py
 │   │   └── process_resting_hr_data.py
 │   ├── hevy/
-│   │   ├── process_hevy_data.py
+│   │   ├── transform_hevy_data.py
 │   │   ├── hevy_pipeline.py
 │   │   └── processors/
 │   │       ├── time.py
