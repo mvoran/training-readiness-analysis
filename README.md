@@ -14,30 +14,41 @@ This project provides:
 
 ```
 TrainingReadiness/
-├── database/
-│   ├── training_readiness.duckdb    # Main DuckDB database
-│   ├── queries/                     # Data processing scripts
-│   │   ├── load_trainingpeaks_data.py
-│   │   ├── load_trainingpeaks_data.sql
-│   │   ├── clean_trainingpeaks_data.py
-│   │   ├── calculate_1wk_4wk_ratio_training_stress.py
-│   │   ├── calculate_1wk_training_stress.py
-│   │   ├── calculate_48hr_training_stress.py
-│   │   └── append_to_duckdb.sql
-│   └── data/                        # Generated CSV exports
+├── src/training_readiness/etl/     # ETL pipeline
+│   ├── extract_data/               # Data extraction scripts
+│   │   ├── trainingpeaks/
+│   │   │   ├── load_trainingpeaks_data.py
+│   │   │   └── load_trainingpeaks_data.sql
+│   │   └── hevy/
+│   │       ├── hevy_data_export.py
+│   │       └── master_workout_processor.py
+│   ├── process_data/               # Data processing scripts
+│   │   ├── trainingpeaks/
+│   │   │   └── clean_trainingpeaks_data.py
+│   │   ├── hevy/
+│   │   │   ├── hevy_pipeline.py
+│   │   │   └── process_hevy_data.py
+│   │   └── apple_health/
+│   │       ├── process_sleep_data.py
+│   │       └── process_resting_hr_data.py
+│   └── export_data/               # Data export scripts
+│       └── trainingpeaks/
+│           ├── calculate_1wk_4wk_ratio_training_stress.py
+│           ├── calculate_1wk_training_stress.py
+│           └── calculate_48hr_training_stress.py
+├── data/                           # Generated data files
 ├── scripts/
-│   └── manage_deps.py               # Dependency management automation
-├── visualization/
-│   └── docker/                      # Metabase Docker setup
-│       ├── docker-compose.yaml
-│       ├── run_docker.sh
-│       ├── metabase-setup.sh
-│       ├── env.template
-│       └── init-training.sql
-├── source_data/                     # Raw TrainingPeaks exports
-├── project_docs/                    # Detailed documentation
-├── pyproject.toml                   # Project dependencies and configuration
-└── Makefile                        # Build and management commands
+│   └── manage_deps.py              # Dependency management automation
+├── docker/                         # Metabase Docker setup
+│   ├── docker-compose.yaml
+│   ├── run_docker.sh
+│   ├── metabase-setup.sh
+│   ├── env.template
+│   └── init-training.sql
+├── docs/                           # Project documentation
+├── tests/                          # Test suite
+├── pyproject.toml                  # Project dependencies and configuration
+└── Makefile                       # Build and management commands
 ```
 
 ## DuckDB Configuration & Setup
@@ -72,7 +83,7 @@ The project includes automated scripts for loading TrainingPeaks export data:
 
 #### Basic Data Loading
 ```bash
-cd database/queries
+cd src/training_readiness/etl/extract_data/trainingpeaks
 python3 load_trainingpeaks_data.py <path/to/your/data.xlsx>
 ```
 
@@ -90,6 +101,7 @@ python3 load_trainingpeaks_data.py <path/to/your/data.xlsx>
 #### Data Cleaning
 Before loading, you may need to clean your TrainingPeaks data:
 ```bash
+cd src/training_readiness/etl/process_data/trainingpeaks
 python3 clean_trainingpeaks_data.py
 ```
 
@@ -101,6 +113,7 @@ The project includes several automated export scripts for common training metric
 
 ### 1. 1-Week to 4-Week Training Stress Ratio
 ```bash
+cd src/training_readiness/etl/export_data/trainingpeaks
 python3 calculate_1wk_4wk_ratio_training_stress.py
 ```
 **Output**: `rolling_1wk_4wk_stress_ratio_YYYYMMDD_HHMMSS.csv`
@@ -113,12 +126,14 @@ python3 calculate_1wk_4wk_ratio_training_stress.py
 
 ### 2. 1-Week Training Stress
 ```bash
+cd src/training_readiness/etl/export_data/trainingpeaks
 python3 calculate_1wk_training_stress.py
 ```
 **Output**: `rolling_1wk_stress_YYYYMMDD_HHMMSS.csv`
 
 ### 3. 48-Hour Training Stress
 ```bash
+cd src/training_readiness/etl/export_data/trainingpeaks
 python3 calculate_48hr_training_stress.py
 ```
 **Output**: `rolling_48hr_stress_YYYYMMDD_HHMMSS.csv`
@@ -133,7 +148,7 @@ python3 calculate_48hr_training_stress.py
 ### Setup Instructions
 
 1. **Configure Environment**:
-   - Copy `visualization/docker/env.template` to `visualization/docker/.env`
+   - Copy `docker/env.template` to `docker/.env`
    - Update the `.env` file with your configuration:
      ```bash
      # Metabase admin credentials
@@ -151,8 +166,8 @@ python3 calculate_48hr_training_stress.py
 2. **Setup Local Directory**:
    ```bash
    mkdir -p /Users/yourusername/Docker/Training_Readiness
-   cp visualization/docker/run_docker.sh /Users/yourusername/Docker/Training_Readiness/
-   cp visualization/docker/.env /Users/yourusername/Docker/Training_Readiness/
+   cp docker/run_docker.sh /Users/yourusername/Docker/Training_Readiness/
+   cp docker/.env /Users/yourusername/Docker/Training_Readiness/
    ```
 
 3. **Start Metabase**:
