@@ -20,7 +20,7 @@ TrainingReadiness/
 │   │   │   ├── load_trainingpeaks_data.py
 │   │   │   └── load_trainingpeaks_data.sql
 │   │   └── hevy/
-│   │       ├── hevy_data_export.py
+│   │       ├── extract_hevy_data.py
 │   │       └── master_workout_processor.py
 │   ├── transform_data/             # Data transformation scripts
 │   │   ├── trainingpeaks/

@@ -1,7 +1,7 @@
 """
-hevy_data_export.py
+extract_hevy_data.py
 
-Exports Hevy workout and exercise data using the Hevy API.
+Extracts Hevy workout and exercise data using the Hevy API.
 - Loads API key from project root .env (HEVY_API_KEY)
 - Exports exercises to hevy_exercises.json
 - Exports workouts to hevy_workouts.csv
