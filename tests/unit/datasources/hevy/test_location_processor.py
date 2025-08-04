@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 from pathlib import Path
 from unittest.mock import mock_open, patch
-from training_readiness.etl.process_data.hevy.processors.location import (
+from training_readiness.etl.transform_data.hevy.processors.location import (
     add_location_columns,
 )
 

@@ -7,7 +7,7 @@ This document defines the standards and patterns for ETL (Extract, Transform, Lo
 ### Script Organization
 ```
 src/training_readiness/etl/
-├── process_data/
+├── transform_data/
 │   ├── apple_health/
 │   │   ├── process_sleep_data.py
 │   │   └── process_resting_hr_data.py
@@ -48,7 +48,7 @@ from config import get_timezone_offset_hours  # noqa: E402
 **Important**: When Black formats imports with parentheses, place the `noqa: E402` comment on the first line of the import statement:
 
 ```python
-from training_readiness.etl.process_data.hevy.hevy_pipeline import (  # noqa: E402
+from training_readiness.etl.transform_data.hevy.hevy_pipeline import (  # noqa: E402
     transform,
 )
 ```
@@ -57,7 +57,7 @@ from training_readiness.etl.process_data.hevy.hevy_pipeline import (  # noqa: E4
 Use absolute imports when importing from other modules:
 
 ```python
-from training_readiness.etl.process_data.hevy.processors.time import add_time_columns
+from training_readiness.etl.transform_data.hevy.processors.time import add_time_columns
 ```
 
 ## User Notifications

@@ -1,4 +1,4 @@
-# src/training_readiness/etl/process_data/hevy/pipeline.py
+# src/training_readiness/etl/transform_data/hevy/pipeline.py
 from pathlib import Path
 import pandas as pd
 from .processors import time, muscles, location

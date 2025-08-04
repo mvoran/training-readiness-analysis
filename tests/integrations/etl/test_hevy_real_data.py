@@ -8,7 +8,7 @@ and catch real-world issues like file path mismatches.
 import pandas as pd
 import pytest
 from pathlib import Path
-from training_readiness.etl.process_data.hevy.hevy_pipeline import transform
+from training_readiness.etl.transform_data.hevy.hevy_pipeline import transform
 
 
 class TestHevyRealData:

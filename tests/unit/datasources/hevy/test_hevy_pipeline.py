@@ -2,7 +2,7 @@ import pandas as pd
 import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
-from training_readiness.etl.process_data.hevy.hevy_pipeline import transform
+from training_readiness.etl.transform_data.hevy.hevy_pipeline import transform
 
 
 class TestHevyPipeline:
@@ -20,12 +20,14 @@ class TestHevyPipeline:
             }
         )
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_basic_workflow(self, mock_location, mock_muscles, mock_time):
         """Test basic pipeline workflow with all processors"""
@@ -76,12 +78,14 @@ class TestHevyPipeline:
         for col in expected_columns:
             assert col in result.columns, f"Missing column: {col}"
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_with_location_maps(self, mock_location, mock_muscles, mock_time):
         """Test pipeline with location mapping files provided"""
@@ -105,12 +109,14 @@ class TestHevyPipeline:
         # Verify result is returned
         assert result is not None
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_without_location_maps(
         self, mock_location, mock_muscles, mock_time
@@ -132,12 +138,14 @@ class TestHevyPipeline:
         # Verify result is returned
         assert result is not None
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_custom_exercises_path(
         self, mock_location, mock_muscles, mock_time
@@ -162,12 +170,14 @@ class TestHevyPipeline:
         # Verify result is returned
         assert result is not None
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_processor_chain(self, mock_location, mock_muscles, mock_time):
         """Test that data flows correctly through the processor chain"""
@@ -199,12 +209,14 @@ class TestHevyPipeline:
         assert "Primary Muscle" in result.columns
         assert "location" in result.columns
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_empty_dataframe(self, mock_location, mock_muscles, mock_time):
         """Test pipeline with empty dataframe"""
@@ -226,12 +238,14 @@ class TestHevyPipeline:
         # Verify result is empty
         assert len(result) == 0
 
-    @patch("training_readiness.etl.process_data.hevy.processors.time.add_time_columns")
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.muscles.add_muscle_groups"
+        "training_readiness.etl.transform_data.hevy.processors.time.add_time_columns"
     )
     @patch(
-        "training_readiness.etl.process_data.hevy.processors.location.add_location_columns"
+        "training_readiness.etl.transform_data.hevy.processors.muscles.add_muscle_groups"
+    )
+    @patch(
+        "training_readiness.etl.transform_data.hevy.processors.location.add_location_columns"
     )
     def test_transform_preserves_original_data(
         self, mock_location, mock_muscles, mock_time

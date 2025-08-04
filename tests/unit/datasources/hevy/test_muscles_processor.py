@@ -3,7 +3,7 @@ import pandas as pd
 import pytest
 from pathlib import Path
 from unittest.mock import patch
-from training_readiness.etl.process_data.hevy.processors.muscles import (
+from training_readiness.etl.transform_data.hevy.processors.muscles import (
     add_muscle_groups,
 )
 

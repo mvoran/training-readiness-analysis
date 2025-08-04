@@ -1,4 +1,4 @@
-# src/training_readiness/etl/process_data/hevy/processors/muscles.py
+# src/training_readiness/etl/transform_data/hevy/processors/muscles.py
 from pathlib import Path
 import json
 import pandas as pd

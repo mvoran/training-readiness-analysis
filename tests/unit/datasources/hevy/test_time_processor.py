@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from training_readiness.etl.process_data.hevy.processors.time import add_time_columns
+from training_readiness.etl.transform_data.hevy.processors.time import add_time_columns
 
 
 class TestTimeProcessor:

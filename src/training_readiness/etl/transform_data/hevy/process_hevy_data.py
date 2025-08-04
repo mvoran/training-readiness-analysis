@@ -28,7 +28,7 @@ import sys
 # Add the src directory to the path so we can import the module
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../../src"))
 
-from training_readiness.etl.process_data.hevy.hevy_pipeline import (  # noqa: E402
+from training_readiness.etl.transform_data.hevy.hevy_pipeline import (  # noqa: E402
     transform,
 )
 

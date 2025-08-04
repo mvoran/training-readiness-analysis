@@ -22,7 +22,7 @@ TrainingReadiness/
 │   │   └── hevy/
 │   │       ├── hevy_data_export.py
 │   │       └── master_workout_processor.py
-│   ├── process_data/               # Data processing scripts
+│   ├── transform_data/             # Data transformation scripts
 │   │   ├── trainingpeaks/
 │   │   │   └── clean_trainingpeaks_data.py
 │   │   ├── hevy/
@@ -101,7 +101,7 @@ python3 load_trainingpeaks_data.py <path/to/your/data.xlsx>
 #### Data Cleaning
 Before loading, you may need to clean your TrainingPeaks data:
 ```bash
-cd src/training_readiness/etl/process_data/trainingpeaks
+cd src/training_readiness/etl/transform_data/trainingpeaks
 python3 clean_trainingpeaks_data.py
 ```
 
