@@ -8,9 +8,6 @@ This document defines the standards and patterns for ETL (Extract, Transform, Lo
 ```
 src/training_readiness/etl/
 ├── transform_data/
-│   ├── apple_health/
-│   │   ├── process_sleep_data.py
-│   │   └── process_resting_hr_data.py
 │   ├── hevy/
 │   │   ├── transform_hevy_data.py
 │   │   ├── hevy_pipeline.py
@@ -20,6 +17,14 @@ src/training_readiness/etl/
 │   │       └── location.py
 │   └── trainingpeaks/
 │       └── process_trainingpeaks_data.py
+├── load_data/
+│   ├── apple_health/
+│   │   ├── load_sleep_data.py
+│   │   └── load_resting_hr_data.py
+│   └── trainingpeaks/
+│       ├── calculate_1wk_4wk_ratio_training_stress.py
+│       ├── calculate_1wk_training_stress.py
+│       └── calculate_48hr_training_stress.py
 ```
 
 ## Import Pattern

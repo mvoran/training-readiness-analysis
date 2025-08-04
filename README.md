@@ -28,10 +28,10 @@ TrainingReadiness/
 │   │   ├── hevy/
 │   │   │   ├── hevy_pipeline.py
 │   │   │   └── transform_hevy_data.py
-│   │   └── apple_health/
-│   │       ├── process_sleep_data.py
-│   │       └── process_resting_hr_data.py
 │   └── load_data/                 # Data loading scripts
+│       ├── apple_health/
+│       │   ├── load_sleep_data.py
+│       │   └── load_resting_hr_data.py
 │       └── trainingpeaks/
 │           ├── calculate_1wk_4wk_ratio_training_stress.py
 │           ├── calculate_1wk_training_stress.py
