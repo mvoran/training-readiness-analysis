@@ -16,7 +16,7 @@ Optional files:
 - maps/location_rollup.csv: Rolls up locations into categories
 
 Output:
-- data/processed/hevy/hevy_workouts_processed_YYYYMMDD_HHMMSS.csv
+- data/transformed_data/hevy/hevy_workouts_processed_YYYYMMDD_HHMMSS.csv
 """
 
 from datetime import datetime
@@ -69,7 +69,7 @@ def main():
         print(f"Processed {len(final_df)} workout records")
 
         # Save output
-        out_dir = Path("data/processed/hevy")
+        out_dir = Path("data/transformed_data/hevy")
         out_dir.mkdir(parents=True, exist_ok=True)
 
         # Generate timestamped filename

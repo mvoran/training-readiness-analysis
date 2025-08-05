@@ -202,7 +202,7 @@ result = process_with_optional_feature(
 ### Output Files
 - Use timestamped filenames to prevent overwrites
 - Standard format: `{source}_{timestamp}.csv`
-- Output to: `data/processed/{source}/`
+- Output to: `data/transformed_data/{source}/`
 
 ### Path Construction Pattern
 ```python
@@ -215,7 +215,7 @@ mapping_file = Path("maps/hevy/workout_date_location.csv")
 
 # Output paths
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-output_file = Path(f"data/processed/hevy/hevy_workouts_processed_{timestamp}.csv")
+output_file = Path(f"data/transformed_data/hevy/hevy_workouts_processed_{timestamp}.csv")
 ```
 
 ## Data Processing Patterns
