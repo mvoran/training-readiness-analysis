@@ -17,7 +17,7 @@ src/training_readiness/etl/
 │   │       └── location.py
 │   └── trainingpeaks/
 │       └── process_trainingpeaks_data.py
-├── load_data/
+├── stage_data/
 │   ├── apple_health/
 │   │   ├── load_sleep_data.py
 │   │   └── load_resting_hr_data.py

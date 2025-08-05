@@ -28,7 +28,7 @@ TrainingReadiness/
 │   │   ├── hevy/
 │   │   │   ├── hevy_pipeline.py
 │   │   │   └── transform_hevy_data.py
-│   └── load_data/                 # Data loading scripts
+│   └── stage_data/                 # Data staging scripts
 │       ├── apple_health/
 │       │   ├── load_sleep_data.py
 │       │   └── load_resting_hr_data.py
@@ -113,7 +113,7 @@ The project includes several automated export scripts for common training metric
 
 ### 1. 1-Week to 4-Week Training Stress Ratio
 ```bash
-cd src/training_readiness/etl/load_data/trainingpeaks
+cd src/training_readiness/etl/stage_data/trainingpeaks
 python3 calculate_1wk_4wk_ratio_training_stress.py
 ```
 **Output**: `rolling_1wk_4wk_stress_ratio_YYYYMMDD_HHMMSS.csv`
@@ -126,14 +126,14 @@ python3 calculate_1wk_4wk_ratio_training_stress.py
 
 ### 2. 1-Week Training Stress
 ```bash
-cd src/training_readiness/etl/load_data/trainingpeaks
+cd src/training_readiness/etl/stage_data/trainingpeaks
 python3 calculate_1wk_training_stress.py
 ```
 **Output**: `rolling_1wk_stress_YYYYMMDD_HHMMSS.csv`
 
 ### 3. 48-Hour Training Stress
 ```bash
-cd src/training_readiness/etl/load_data/trainingpeaks
+cd src/training_readiness/etl/stage_data/trainingpeaks
 python3 calculate_48hr_training_stress.py
 ```
 **Output**: `rolling_48hr_stress_YYYYMMDD_HHMMSS.csv`

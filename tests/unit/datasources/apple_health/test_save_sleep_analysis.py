@@ -8,7 +8,7 @@ import pytest
 # Add the src directory to the path so we can import the module
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../../src"))
 
-from training_readiness.etl.load_data.apple_health.load_sleep_data import (  # noqa: E402
+from training_readiness.etl.stage_data.apple_health.load_sleep_data import (  # noqa: E402
     save_sleep_analysis,
 )
 
