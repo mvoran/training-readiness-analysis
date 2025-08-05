@@ -17,8 +17,8 @@ class TestHevyRealData:
     def test_with_real_data_files(self):
         """Test with actual Hevy data files"""
         # Check if real data files exist
-        workout_file = Path("data/raw/hevy/hevy_workouts.csv")
-        exercises_file = Path("data/raw/hevy/hevy_exercises.json")
+        workout_file = Path("data/raw_data/hevy/hevy_workouts.csv")
+        exercises_file = Path("data/raw_data/hevy/hevy_exercises.json")
         date_map_file = Path("maps/hevy/map_workout_date_location.csv")
         rollup_map_file = Path("maps/hevy/rollup_location.csv")
 
@@ -82,8 +82,8 @@ class TestHevyRealData:
     def test_without_location_files(self):
         """Test behavior when location mapping files are missing"""
         # Check if real data files exist
-        workout_file = Path("data/raw/hevy/hevy_workouts.csv")
-        exercises_file = Path("data/raw/hevy/hevy_exercises.json")
+        workout_file = Path("data/raw_data/hevy/hevy_workouts.csv")
+        exercises_file = Path("data/raw_data/hevy/hevy_exercises.json")
 
         # Skip test if real data files don't exist
         if not workout_file.exists():
@@ -134,8 +134,8 @@ class TestHevyRealData:
         """Test that the script's expected file paths match actual files"""
         # Files the script expects
         script_expected_files = [
-            "data/raw/hevy/hevy_workouts.csv",
-            "data/raw/hevy/hevy_exercises.json",
+            "data/raw_data/hevy/hevy_workouts.csv",
+            "data/raw_data/hevy/hevy_exercises.json",
             "maps/hevy/map_workout_date_location.csv",
             "maps/hevy/rollup_location.csv",
         ]
@@ -163,8 +163,8 @@ class TestHevyRealData:
 
     def test_real_data_processing_performance(self):
         """Test performance with real data"""
-        workout_file = Path("data/raw/hevy/hevy_workouts.csv")
-        exercises_file = Path("data/raw/hevy/hevy_exercises.json")
+        workout_file = Path("data/raw_data/hevy/hevy_workouts.csv")
+        exercises_file = Path("data/raw_data/hevy/hevy_exercises.json")
 
         if not workout_file.exists() or not exercises_file.exists():
             pytest.skip("Real data files not found")

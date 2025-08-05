@@ -134,8 +134,8 @@ def fetch_hevy_workouts() -> Optional[pd.DataFrame]:
 
 
 def main():
-    """Export Hevy exercises and workouts to data/raw/hevy/"""
-    output_dir = Path("data/raw/hevy")
+    """Export Hevy exercises and workouts to data/raw_data/hevy/"""
+    output_dir = Path("data/raw_data/hevy")
     output_dir.mkdir(parents=True, exist_ok=True)
     # Export exercises
     print("Fetching Hevy exercises...")

@@ -7,7 +7,7 @@ from .processors import time, muscles, location
 def transform(
     df: pd.DataFrame,
     *,
-    exercises_path: Path = Path("data/raw/hevy/hevy_exercises.json"),
+    exercises_path: Path = Path("data/raw_data/hevy/hevy_exercises.json"),
     date_map: Path | None = None,
     rollup_map: Path | None = None,
 ) -> pd.DataFrame:

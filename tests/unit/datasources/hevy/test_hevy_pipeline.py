@@ -287,7 +287,7 @@ class TestHevyPipeline:
 
         # Check default parameters
         assert sig.parameters["exercises_path"].default == Path(
-            "data/raw/hevy/hevy_exercises.json"
+            "data/raw_data/hevy/hevy_exercises.json"
         )
         assert sig.parameters["date_map"].default is None
         assert sig.parameters["rollup_map"].default is None

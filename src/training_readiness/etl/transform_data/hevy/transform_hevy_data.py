@@ -8,8 +8,8 @@ This script transforms raw Hevy workout data by:
 4. Outputting processed data with timestamped filenames
 
 Required files:
-- data/raw/hevy/hevy_workouts.csv: Raw workout data from Hevy API
-- data/raw/hevy/hevy_exercises.json: Exercise templates from Hevy API
+- data/raw_data/hevy/hevy_workouts.csv: Raw workout data from Hevy API
+- data/raw_data/hevy/hevy_exercises.json: Exercise templates from Hevy API
 
 Optional files:
 - maps/workout_date_location.csv: Maps workout dates to locations
@@ -36,8 +36,8 @@ from training_readiness.etl.transform_data.hevy.hevy_pipeline import (  # noqa: 
 def main():
     try:
         # Read input files
-        workout_file = "data/raw/hevy/hevy_workouts.csv"
-        exercises_file = "data/raw/hevy/hevy_exercises.json"
+        workout_file = "data/raw_data/hevy/hevy_workouts.csv"
+        exercises_file = "data/raw_data/hevy/hevy_exercises.json"
         date_map = Path("maps/hevy/map_workout_date_location.csv")
         rollup_map = Path("maps/hevy/rollup_location.csv")
 

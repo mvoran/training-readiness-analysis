@@ -196,7 +196,7 @@ result = process_with_optional_feature(
 ### Input Files
 - Use relative paths from project root
 - Standard locations:
-  - `data/raw/{source}/` for raw data files
+  - `data/raw_data/{source}/` for raw data files
   - `maps/{source}/` for mapping files
 
 ### Output Files
@@ -210,7 +210,7 @@ from datetime import datetime
 from pathlib import Path
 
 # Input paths
-input_file = Path("data/raw/hevy/hevy_workouts.csv")
+input_file = Path("data/raw_data/hevy/hevy_workouts.csv")
 mapping_file = Path("maps/hevy/workout_date_location.csv")
 
 # Output paths
@@ -261,8 +261,8 @@ def process_data(input_data):
 def test_with_real_data_files(self):
     """Test with actual data files to catch real-world issues"""
     # Use actual file paths, not temporary test files
-    workout_file = Path("data/raw/hevy/hevy_workouts.csv")
-    exercises_file = Path("data/raw/hevy/hevy_exercises.json")
+    workout_file = Path("data/raw_data/hevy/hevy_workouts.csv")
+    exercises_file = Path("data/raw_data/hevy/hevy_exercises.json")
 
     # Skip if real files don't exist
     if not workout_file.exists():

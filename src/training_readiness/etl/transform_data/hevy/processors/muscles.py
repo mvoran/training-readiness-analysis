@@ -6,7 +6,7 @@ import pandas as pd
 
 def add_muscle_groups(
     df: pd.DataFrame,
-    exercises_path: Path = Path("data/raw/hevy/hevy_exercises.json"),
+    exercises_path: Path = Path("data/raw_data/hevy/hevy_exercises.json"),
     rollup_path: Path = Path(
         "src/training_readiness/resources/hevy/primary_muscle_rollup.csv"
     ),
